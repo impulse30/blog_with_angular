@@ -1,0 +1,49 @@
+<div class="max-w-3xl mx-auto p-4 bg-white shadow-md rounded-lg">
+  <!-- Titre de l'article -->
+  <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ article.title }}</h1>
+
+  <!-- Image de l'article -->
+  <div class="mb-4">
+    <img
+      src="{{ article.photo }}"
+      alt="Article image"
+      class="w-full rounded-lg"
+    />
+  </div>
+
+  <!-- Catégories -->
+
+  <!-- Slug -->
+  <div class="text-gray-500 italic">{{ article.slug }}</div>
+
+  <!-- Auteur et date -->
+  <div class="mt-4 text-gray-600 text-sm">
+    <i>
+      Publié par <b class="text-gray-800">{{ article.auteur }}</b> le
+      {{ article.created_at }}
+    </i>
+  </div>
+
+  <!-- Section des commentaires -->
+  <div class="mt-6">
+    <h2 class="text-lg font-semibold mb-3">Commentaires</h2>
+
+    <div
+      *ngFor="let comment of article?.comment"
+      class="flex items-start space-x-4 p-4 border-b"
+    >
+      <!-- Avatar (Image de profil par défaut) -->
+      <div>
+        <img src="https://i.pravatar.cc/40" class="w-10 h-10 rounded-full" />
+      </div>
+
+      <!-- Contenu du commentaire -->
+      <div class="flex-1">
+        <div class="flex items-center space-x-2">
+          <b class="text-gray-900">{{ comment.auteur }}</b>
+        </div>
+        <p class="text-gray-700 text-sm mt-1">{{ comment.content }}</p>
+      </div>
+    </div>
+  </div>
+</div>
