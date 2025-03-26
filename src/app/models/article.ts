@@ -20,5 +20,5 @@ export interface ArticleStore {
   auteur: string;
   photo: string;
 
-  category: Category[];
+  category: number[];
 }

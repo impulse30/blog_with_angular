@@ -16,7 +16,7 @@ export class SingleComponent {
   service: ArticleService = inject(ArticleService);
   articleId = -1;
 
-  ngOnInit() {
+  async ngOnInit() {
     this.articleId = Number(this.route.snapshot.paramMap.get('id'));
     this.article = this.service.getOne(this.articleId);
   }

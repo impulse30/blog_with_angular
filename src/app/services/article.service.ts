@@ -8,16 +8,7 @@ import { Category } from '../models/category';
 export class ArticleService {
   articles: Article[] = [];
 
-  // async all(): Promise<Article[]> {
-  //   let data = await fetch('http://localhost:8000/articles', {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   }).then((response) => response.json());
-  //   console.log(data);
-  //   return data;
-  // }
+
 
   async all(): Promise<Article[]> {
     return await fetch('http://localhost:8000/api/articles')
@@ -40,34 +31,63 @@ export class ArticleService {
     title: string,
     content: string,
     auteur: string,
-    image: string,
-    categories: Category[]
+    photo: string, // ✅ Assurer que le champ photo est bien envoyé
+    categories: number[]
   ): Promise<ArticleStore> {
+    const articleData = {
+      title,
+      content,
+      auteur,
+      photo, // ✅ Assurez-vous que ce champ est bien rempli
+      category_id: categories, // ✅ Vérifiez si l'API attend `category_id` au lieu de `categories`
+    };
+  
+    console.log('🔹 Données envoyées à l’API :', articleData); // ✅ Debug avant envoi
+  
     const response = await fetch('http://localhost:8000/api/articles', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
-      body: JSON.stringify({
-        title,
-        content,
-        auteur,
-        image,
-        categories: categories.map(category => category.id), // Assurez-vous d'envoyer seulement les IDs
-      }),
+      body: JSON.stringify(articleData),
     });
   
+    const textResponse = await response.text();
+    console.log('🔹 Réponse brute de l\'API :', textResponse); // ✅ Voir la réponse avant parsing
+  
     if (!response.ok) {
-      throw new Error('Erreur lors de la création de l\'article');
+      throw new Error(`Erreur API : ${response.status} - ${response.statusText}`);
     }
   
-    const data = await response.json();
-    return data; // Assurez-vous que la structure correspond à votre API
+    try {
+      return JSON.parse(textResponse); // ✅ Vérifie si c'est un JSON valide
+    } catch (error) {
+      throw new Error('La réponse de l\'API n\'est pas un JSON valide');
+    }
   }
-
+  
+  
+  
   async allCategory(): Promise<Category[]> {
-    return await fetch('http://localhost:8000/api/categories').then(
-      (response) => response.json()
-    );
+    try {
+      const response = await fetch('http://localhost:8000/api/categories');
+  
+      if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des catégories');
+      }
+  
+      const data = await response.json();
+  
+      if (!Array.isArray(data)) {
+        throw new Error('Format de réponse incorrect pour les catégories');
+      }
+  
+      return data;
+    } catch (error) {
+      console.error('Erreur:', error);
+      return []; // ✅ Retourne un tableau vide en cas d'erreur pour éviter les crashs
+    }
   }
+  
 }

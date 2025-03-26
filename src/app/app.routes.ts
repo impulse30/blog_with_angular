@@ -3,14 +3,12 @@ import { ListArticleComponent } from './list-article/list-article.component';
 import { CategorieComponent } from './categorie/categorie.component';
 import { SingleComponent } from './single/single.component';
 import { LoginComponent } from './login/login.component';
-import { CreateComponent } from './create/create.component';
-
-
+import { AddComponent } from './add/add.component';
 
 export const routes: Routes = [
-  { path: '', component: ListArticleComponent },
+  { path: 'articles', component: ListArticleComponent },
   { path: 'categories', component: CategorieComponent },
   { path: 'articles/:id', component: SingleComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'create', component: CreateComponent },
+  { path: '', component: LoginComponent },
+  { path: 'create', component: AddComponent },
 ];

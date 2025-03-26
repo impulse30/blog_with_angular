@@ -14,8 +14,8 @@ import { NgIf } from '@angular/common';
 export class LoginComponent {
   service: UserService = inject(UserService);
   router: Router = inject(Router);
-  isOpen: boolean = false;
-  showToast: boolean = false; // ✅ Ajout du state pour le toast
+  showToast: boolean = false;
+  errorMessage: string = '';
 
   loginForm = new FormGroup({
     email: new FormControl(''),
@@ -23,6 +23,9 @@ export class LoginComponent {
   });
 
   login() {
+    this.errorMessage = '';
+    this.showToast = false;
+
     this.service
       .loginUser(
         this.loginForm.value.email ?? '',
@@ -32,21 +35,22 @@ export class LoginComponent {
         if (response.token) {
           localStorage.setItem('token', response.token);
           localStorage.setItem('nom', response.name);
-          this.showToast = true; // ✅ Affichage du toast
+          this.showToast = true; //  Affichage du toast vert
 
-          // ✅ Masquer le toast après 3 secondes
           setTimeout(() => {
             this.showToast = false;
-            this.router.navigate(['articles']);
-            location.reload();
+            this.router.navigate(['/articles']).then(() => {
+              window.location.reload();
+            });
           }, 3000);
         } else {
-          this.isOpen = true;
+          this.errorMessage = 'Email ou mot de passe incorrect.';
+          setTimeout(() => (this.errorMessage = ''), 3000); // Masquer après 3s
         }
+      })
+      .catch(() => {
+        this.errorMessage = 'Une erreur est survenue. Veuillez réessayer.';
+        setTimeout(() => (this.errorMessage = ''), 3000);
       });
-  }
-
-  close() {
-    this.isOpen = false;
   }
 }
